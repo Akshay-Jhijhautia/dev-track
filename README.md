@@ -18,48 +18,27 @@ Django
 JSON file storage
 Postman for API testing
 
-**Project Structure**                                       
-devtrack/
-├── manage.py
-├── reporters.json
-├── issues.json
-├── devtrack/
-│   ├── settings.py
-│   └── urls.py
-├── issues/
-│   ├── models.py
-│   ├── views.py
-│   └── urls.py
-
 **How to Run the Project**                                                
-Clone the repository:
+Clone the repository:                    
 
 git clone <your-github-repo-url>
-cd devtrack
-Create and activate a virtual environment:
+cd devtrack                            
+Create and activate a virtual environment:                           
+python3 -m venv venv                                 
+source venv/bin/activate                                     
+Install dependencies: pip install -r requirements.txt                                         
+Run migrations: python manage.py migrate                                        
+Start the server: python manage.py runserver                                   
+The API will be available at: http://127.0.0.1:8000/                               
 
-python3 -m venv venv
-source venv/bin/activate
-Install dependencies:
+**API Endpoints**                                      
 
-pip install -r requirements.txt
-Run migrations:
-
-python manage.py migrate
-Start the server:
-
-python manage.py runserver
-The API will be available at:
-
-http://127.0.0.1:8000/
-
-**API Endpoints**
-Reporter Endpoints:
+Reporter Endpoints:                                            
 POST	/api/reporters/	Create a new reporter
 GET	/api/reporters/	Get all reporters
 GET	/api/reporters/?id=1	Get reporter by ID
 
-Issue Endpoints:
+Issue Endpoints:                                            
 Method	Endpoint	Description
 POST	/api/issues/	Create a new issue
 GET	/api/issues/	Get all issues
