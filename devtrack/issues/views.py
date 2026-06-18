@@ -86,22 +86,114 @@ def get_reporters(request):
         return JsonResponse({"error": "Reporter not found"}, status = 400)
     return JsonResponse(reporters, safe=False, status = 200)
 
-# @csrf_exempt
-# def issues_view(request):
-#     if request.method == "POST":
-#         return create_issue(request)
+@csrf_exempt
+def issues_view(request):
+    if request.method == "POST":
+        return create_issue(request)
     
-#     if request.method == "GET":
-#         return get_issue(request)
+    if request.method == "GET":
+        return get_issue(request)
     
-#     return JsonResponse({"error": "Invalid JSON Body"}, status = 405)
+    return JsonResponse({"error": "Invalid JSON Body"}, status = 405)
 
-# def create_issue(request):
-#     data = parse_json_body(request)
+def create_issue(request):
+    data = parse_json_body(request)
     
-#     if data is None:
-#         return JsonResponse({"error": "Invalid JSON body"}, status = 400)
+    if data is None:
+        return JsonResponse({"error": "Invalid JSON body"}, status = 400)
     
+    try:
+        priority = data.get("priority")
 
-# def get_issue(request):
-#     pass
+        if priority == "critical":
+            issue = CriticalIssue(
+                id = data.get("id"),
+                title = data.get("title"),
+                description= data.get("description"),
+                status=data.get("status"),
+                priority=data.get("priority"),
+                reporter_id=data.get("reporter_id"),
+            )
+        elif priority == "low":
+            issue = LowPriotityIssue(
+                id = data.get("id"),
+                title = data.get("title"),
+                description= data.get("description"),
+                status=data.get("status"),
+                priority=data.get("priority"),
+                reporter_id=data.get("reporter_id"),
+            )
+        else:
+            issue = Issue(
+                id = data.get("id"),
+                title = data.get("title"),
+                description= data.get("description"),
+                status=data.get("status"),
+                priority=data.get("priority"),
+                reporter_id=data.get("reporter_id"),
+            )
+        
+        issue.validate()
+
+        reporters = read_json_file(REPORTERS_FILE)
+
+        reporter_exists = False
+        for reporter in reporters:
+            if reporter["id"] == issue.reporter_id:
+                reporter_exists = True
+                break
+        
+        if not reporter_exists:
+            return JsonResponse({"error: Reporter not found"}, status = 404)
+        
+        issues = read_json_file(ISSUES_FILE)
+
+        for existing_issue in issues:
+            if existing_issue["id"] == issue.id:
+                return JsonResponse({
+                    "error": "Issue with this id already exists"
+                }, status = 400)
+        
+        issue_data = issue.to_dict()
+        issue_data["message"] = issue.describe()
+
+        issues.append(issue_data)
+        write_json_file(ISSUES_FILE,issues)
+
+        return JsonResponse(issue_data, status = 201)
+    except ValueError as error:
+        return JsonResponse({"error": str(error)}, status = 400)
+
+def get_issue(request):
+    issues = read_json_file(ISSUES_FILE)
+
+    issue_id = request.GET.get("id")
+    status = request.GET.get("status")
+
+    if issue_id:
+        try:
+            issue_id = int(issue_id)
+        except ValueError:
+            return JsonResponse({"error": "Issue id must be an integer"})
+        
+        for issue in issues:
+            if issue["id"] == issue_id:
+                return JsonResponse(issue, status = 200)
+        
+        return JsonResponse({"error", "Issue not found"}, status = 400)
+    
+    if status:
+        allowed_statuses = Issue.ALLOWED_STATUSES
+
+        if status not in allowed_statuses:
+            return JsonResponse({"error": "Invalid status"}, status = 400)
+        
+        filtered_issues = []
+
+        for issue in issues:
+            if issue["status"] == status:
+                filtered_issues.append(issue)
+            
+        return JsonResponse(filtered_issues, safe=False, status = 200)
+    
+    return JsonResponse(issues, safe=False, status = 200)
