@@ -55,10 +55,10 @@ class Issue(BaseEntity):
         if not self.title:
             raise ValueError("Title cannot be empty")
         
-        if not self.status not in self.ALLOWED_STATUSES:
+        if self.status not in self.ALLOWED_STATUSES:
             raise ValueError("Invalid status")
         
-        if not self.priority not in self.ALLOWED_PRIORITIES:
+        if self.priority not in self.ALLOWED_PRIORITIES:
             raise ValueError("Invalid Priority")
         
         if not isinstance(self.reporter_id, int):

@@ -98,6 +98,7 @@ def issues_view(request):
 
 def create_issue(request):
     data = parse_json_body(request)
+    print(f"line 101 {data}")
     
     if data is None:
         return JsonResponse({"error": "Invalid JSON body"}, status = 400)

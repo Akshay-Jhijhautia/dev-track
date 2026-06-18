@@ -1,4 +1,4 @@
-from django import path
+from django.urls import path
 from .views import reporters_view, issues_view
 
 urlpatterns = [
