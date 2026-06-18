@@ -19,8 +19,7 @@ JSON file storage
 Postman for API testing
 
 **How to Run the Project**                                                
-Clone the repository:                    
-
+Clone the repository:                          
 git clone <your-github-repo-url>
 cd devtrack                            
 Create and activate a virtual environment:                           
@@ -33,14 +32,13 @@ The API will be available at: http://127.0.0.1:8000/
 
 **API Endpoints**                                      
 
-Reporter Endpoints:                                            
-POST	/api/reporters/	Create a new reporter
-GET	/api/reporters/	Get all reporters
-GET	/api/reporters/?id=1	Get reporter by ID
+1. Reporter Endpoints:                                                   
+POST	/api/reporters/	Create a new reporter                                           
+GET	/api/reporters/	Get all reporters                                                      
+GET	/api/reporters/?id=1	Get reporter by ID                                                   
 
-Issue Endpoints:                                            
-Method	Endpoint	Description
-POST	/api/issues/	Create a new issue
-GET	/api/issues/	Get all issues
-GET	/api/issues/?id=1	Get issue by ID
-GET	/api/issues/?status=open	Filter issues by status
+2. Issue Endpoints:                                                  
+POST	/api/issues/	Create a new issue                                               
+GET	/api/issues/	Get all issues                                                    
+GET	/api/issues/?id=1	Get issue by ID                                                             
+GET	/api/issues/?status=open	Filter issues by status                                                   
